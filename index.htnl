@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        text-align: center;
+    }
+    
+    #click-area {
+        width: 200px;
+        height: 200px;
+        background-color: lightgray;
+        margin: 50px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    
+    #language-selector {
+        margin-top: 20px;
+    }
+    
+    #timer {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+</style>
+</head>
+<body>
+    <h1>Измерение кликов в минуту</h1>
+    <div id="language-selector">
+        <label for="language">Выберите язык:</label>
+        <select id="language">
+            <option value="ru">Русский</option>
+            <option value="en">Английский</option>
+            <option value="pl">Польский</option>
+            <option value="ro">Румынский</option>
+            <option value="uk">Украинский</option>
+        </select>
+    </div>
+    <div id="timer">
+        <label for="duration">Выберите длительность теста (в секундах):</label>
+        <input type="number" id="duration" min="1" max="60" value="10">
+    </div>
+    <div id="click-area">Нажмите здесь</div>
+    <div id="click-counter">Кликов: 0</div>
+    <script>
+        var clicks = 0;
+        var startTime = 0;
+        var endTime = 0;
+        var intervalId = null;
+        
+        document.getElementById("click-area").addEventListener("click", function() {
+            if (clicks === 0) {
+                startTime = Date.now();
+                intervalId = setInterval(updateClicks, 100);
+            }
+            
+            clicks++;
+            document.getElementById("click-counter").innerHTML = "Кликов: " + clicks;
+        });
+        
+        function updateClicks() {
+            document.getElementById("click-counter").innerHTML = "Кликов: " + clicks;
+        }
+        
+        function endTest() {
+            clearInterval(intervalId);
+            endTime = Date.now();
+            var totalTime = (endTime - startTime) / 1000; // в секундах
+            var cps = clicks / totalTime; // клики в секунду
+            var cpm = cps * 60; // клики в минуту
+            
+            var language = document.getElementById("language").value;
+            var languageString = "";
+            
+            if (language === "ru") {
+                languageString = "Ваше";
+            } else if (language === "en") {
+                languageString = "Your";
+            } else if (language === "pl") {
+                languageString = "Twój";
+            } else if (language === "ro") {
+                languageString = "Al tău";
+            } else if (language === "uk") {
+                languageString = "Ваш";
+            }
+            
+            alert(languageString + " CPS (клики в секунду): " + cps.toFixed(2) + "\n" + languageString + " CPM (клики в минуту): " + cpm.toFixed(2));
+        }
+        
+        var durationInput = document.getElementById("duration");
+        durationInput.addEventListener("change", function() {
+            var duration = parseInt(durationInput.value);
+            if (duration > 0 && duration <= 60) {
+                clearInterval(intervalId);
+                endTime = Date.now();
+                var elapsedTime = (endTime - startTime) / 1000; // в секундах
+                clicks = Math.floor(elapsedTime * (clicks / elapsedTime)); // пересчитываем клики в соответствии с новой длительностью
+                document.getElementById("click-counter").innerHTML = "Кликов: " + clicks;
+                startTime = Date.now();
+                intervalId = setInterval(updateClicks, 100);
+            }
+        });
+        
+        setTimeout(endTest, 10000); // 10 секунд
+    </script>
+</body>
+</html>
