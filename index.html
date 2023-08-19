@@ -105,6 +105,25 @@
             }
         });
         
+        document.getElementById("language").addEventListener("change", function() {
+            var language = document.getElementById("language").value;
+            var languageString = "";
+
+            if (language === "ru") {
+                languageString = "Ваше";
+            } else if (language === "en") {
+                languageString = "Your";
+            } else if (language === "pl") {
+                languageString = "Twój";
+            } else if (language === "ro") {
+                languageString = "Al tău";
+            } else if (language === "uk") {
+                languageString = "Ваш";
+            }
+
+            document.getElementById("click-area").innerHTML = languageString + " текст";
+        });
+        
         setTimeout(endTest, 10000); // 10 секунд
     </script>
 </body>
